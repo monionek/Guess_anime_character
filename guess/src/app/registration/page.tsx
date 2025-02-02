@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { userData } from '../../utils/interfaces';
+import { userData } from '@/utils/interfaces';
 
 export default function RegisterPage() {
     const [emailValue, setEmailValue] = useState<string>('');
@@ -45,19 +45,16 @@ export default function RegisterPage() {
         try {
             const registered = await registerUser(user);
             if (registered) {
-                // Clear form fields
                 setEmailValue('');
                 setNameValue('');
                 setPasswordValue('');
 
-                // Set success message
                 setRegistrationStatus({
                     success: true,
                     message: 'Registration successful!',
                 });
             }
         } catch (error) {
-            // Set error message
             setRegistrationStatus({
                 success: false,
                 message: error instanceof Error ? error.message : 'Registration failed. Please try again.',

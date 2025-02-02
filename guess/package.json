@@ -12,6 +12,7 @@
     "@types/dotenv": "^6.1.1",
     "@types/jsonwebtoken": "^9.0.8",
     "dotenv": "^16.4.7",
+    "firebase": "^11.2.0",
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "next": "15.1.6",
