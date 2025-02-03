@@ -4,19 +4,19 @@ import path from 'path';
 import { userData } from '@/utils/interfaces';
 import { jwtGeneration } from '@/utils/jwt';
 
-const usersFilePath = path.join(process.cwd(), 'src/dbs/users.json');
+const dbFilePath = path.join(process.cwd(), 'src/dbs/users.json');
 
 export async function POST(request: Request) {
     try {
         const loginData = await request.json();
         console.log('Received new login request:', loginData);
 
-        if (!fs.existsSync(usersFilePath)) {
+        if (!fs.existsSync(dbFilePath)) {
             console.error('users.json file does not exist');
             return NextResponse.json({ message: 'Database file not found' }, { status: 500 });
         }
 
-        const users = JSON.parse(fs.readFileSync(usersFilePath, 'utf-8'));
+        const users = JSON.parse(fs.readFileSync(dbFilePath, 'utf-8'));
         const findUser = users.find((el: userData) => el.email === loginData.email || el.userName === loginData.userName)
         if (findUser) {
             console.log("User Logged in:", loginData.userName)

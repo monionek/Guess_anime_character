@@ -10,3 +10,10 @@ export interface leaderboardData {
     numberOfTries: number;
     characterName: string;
 }
+
+export interface quizData {
+    quizTitle: string;
+    correctAnswer: string;
+    wrongAnswers: string[];
+    description: string;
+}

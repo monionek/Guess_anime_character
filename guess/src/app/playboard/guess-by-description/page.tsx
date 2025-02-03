@@ -1,6 +1,6 @@
-'use client'; // Ensure this is a Client Component
+'use client';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // For redirecting
+import { useRouter } from 'next/navigation';
 
 export default function GuessByPicturePage() {
     const [character, setCharacter] = useState<{
@@ -16,11 +16,10 @@ export default function GuessByPicturePage() {
     const [showAnimeTitle, setShowAnimeTitle] = useState(false);
     const router = useRouter();
 
-    // Fetch character data from API
     useEffect(() => {
         const fetchCharacter = async () => {
             try {
-                const response = await fetch('/api/random-character'); // Replace with your API endpoint
+                const response = await fetch('/api/random-character');
                 if (!response.ok) {
                     throw new Error('Failed to fetch character');
                 }
@@ -39,69 +38,74 @@ export default function GuessByPicturePage() {
         fetchCharacter();
     }, []);
 
+    // Function to get username from JWT
+    const getUserNameFromJWT = () => {
+        const jwtToken = localStorage.getItem('jwtToken');
+        if (!jwtToken) return 'Guest';
+
+        try {
+            const userName = localStorage.getItem('userName')
+            return userName || 'Guest';
+        } catch (error) {
+            console.error('Invalid JWT format:', error);
+            return 'Guest';
+        }
+    };
+
+    // Function to update leaderboard
+    const updateLeaderboard = async (userName: string, tries: number, characterName: string) => {
+        try {
+            const leaderboardResponse = await fetch('/api/set-leaderboard', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userName,
+                    numberOfTries: tries,
+                    characterName,
+                }),
+            });
+
+            if (!leaderboardResponse.ok) {
+                throw new Error('Failed to update leaderboard');
+            }
+
+            console.log('Leaderboard updated successfully');
+        } catch (error) {
+            console.error('Error updating leaderboard:', error);
+        }
+    };
+
     // Handle user's guess
-    const handleGuess = async () => {
+    const handleGuess = () => {
         if (!character) return;
 
         setNumberOfTries((prev) => {
-            const newTries = prev + 1;
+            const updatedTries = prev + 1;
 
-            if (newTries >= 5) {
+            if (updatedTries >= 5) {
                 setShowImage(true); // Show image after 5 incorrect tries
             }
-            if (newTries >= 10) {
+            if (updatedTries >= 10) {
                 setShowAnimeTitle(true); // Show anime title after 10 incorrect tries
             }
 
-            return newTries;
+            if (userGuess.trim().toLowerCase() === character.name.toLowerCase()) {
+                setIsCorrect(true);
+
+                const userName = getUserNameFromJWT();
+                updateLeaderboard(userName, updatedTries, character.name);
+
+                setTimeout(() => {
+                    router.push('/playboard');
+                }, 2000);
+            } else {
+                setIsCorrect(false);
+            }
+
+            return updatedTries;
         });
-
-        if (userGuess.trim().toLowerCase() === character.name.toLowerCase()) {
-            setIsCorrect(true);
-
-            // Get username from JWT stored in localStorage
-            const jwtToken = localStorage.getItem('jwtToken');
-            let userName = 'Guest';
-
-            if (jwtToken) {
-                try {
-                    const payload = JSON.parse(atob(jwtToken.split('.')[1])); // Decode JWT payload
-                    userName = payload.username || 'Guest';
-                } catch (error) {
-                    console.error('Error decoding JWT:', error);
-                }
-            }
-
-            // Send data to leaderboard API
-            try {
-                const leaderboardResponse = await fetch('/api/set-leaderboard', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        userName,
-                        numberOfTries,
-                        characterName: character.name,
-                    }),
-                });
-
-                if (!leaderboardResponse.ok) {
-                    throw new Error('Failed to update leaderboard');
-                }
-
-                console.log('Leaderboard updated successfully');
-            } catch (error) {
-                console.error('Error updating leaderboard:', error);
-            }
-
-            // Redirect after 2 seconds
-            setTimeout(() => {
-                router.push('/playboard');
-            }, 2000);
-        } else {
-            setIsCorrect(false);
-        }
     };
 
     if (!character) {
@@ -129,6 +133,7 @@ export default function GuessByPicturePage() {
                     type="text"
                     value={userGuess}
                     onChange={(e) => setUserGuess(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
                     placeholder="Who is this character?"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />

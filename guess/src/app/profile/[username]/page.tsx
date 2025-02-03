@@ -55,7 +55,24 @@ const ProfilePage = () => {
                 <p className="text-red-300 text-lg">User not found</p>
             </div>
         );
-
+    const handleDelete = async () => {
+        try {
+            const deleted = await fetch('/api/delete-user', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userName: params.username })
+            })
+            if (!deleted.ok) {
+                console.log(deleted)
+                return
+            }
+            localStorage.removeItem("jwtToken")
+            router.push("/")
+            alert('account has been deleted')
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
             <div className="bg-white/90 shadow-2xl rounded-xl p-8 w-96 text-center">
@@ -68,6 +85,14 @@ const ProfilePage = () => {
                     </p>
                     <p className="text-lg">
                         <span className="font-semibold">Points:</span> {user.points} 🎯
+                    </p>
+                    <p>
+                        <button
+                            onClick={handleDelete}
+                            className="mt-4 px-6 py-2 text-white font-semibold bg-red-500 hover:bg-red-600 active:opacity-75 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105"
+                        >
+                            Delete Account
+                        </button>
                     </p>
                 </div>
             </div>

@@ -8,5 +8,45 @@
     "userName": "Guest",
     "numberOfTries": 11,
     "characterName": "Chrno"
+  },
+  {
+    "userName": "Guest",
+    "numberOfTries": 6,
+    "characterName": "Killer Queen"
+  },
+  {
+    "userName": "Guest",
+    "numberOfTries": 6,
+    "characterName": "Killer Queen"
+  },
+  {
+    "userName": "Guest",
+    "numberOfTries": 0,
+    "characterName": "Germany"
+  },
+  {
+    "userName": "Guest",
+    "numberOfTries": 10,
+    "characterName": "Motoko Kusanagi"
+  },
+  {
+    "userName": "Guest",
+    "numberOfTries": 10,
+    "characterName": "Koro-sensei"
+  },
+  {
+    "userName": "Maks",
+    "numberOfTries": 10,
+    "characterName": "Kitarou"
+  },
+  {
+    "userName": "Maks",
+    "numberOfTries": 1,
+    "characterName": "Kagura"
+  },
+  {
+    "userName": "Maks",
+    "numberOfTries": 1,
+    "characterName": "Kagura"
   }
 ]

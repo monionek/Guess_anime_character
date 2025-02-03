@@ -2,22 +2,22 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-const usersFilePath = path.join(process.cwd(), 'src/dbs/leaderboard.json');
+const dbFilePath = path.join(process.cwd(), 'src/dbs/leaderboard.json');
 
 export async function POST(request: Request) {
     try {
         const gameData = await request.json();
         console.log('Received new login request:', gameData);
 
-        if (!fs.existsSync(usersFilePath)) {
+        if (!fs.existsSync(dbFilePath)) {
             console.error('leaderboard.json file does not exist');
             return NextResponse.json({ message: 'Database file not found' }, { status: 500 });
         }
 
-        const leaderboard = JSON.parse(fs.readFileSync(usersFilePath, 'utf-8'));
+        const leaderboard = JSON.parse(fs.readFileSync(dbFilePath, 'utf-8'));
         leaderboard.push(gameData);
 
-        fs.writeFileSync(usersFilePath, JSON.stringify(leaderboard, null, 2));
+        fs.writeFileSync(dbFilePath, JSON.stringify(leaderboard, null, 2));
 
         console.log('Leaderboard updated successfully:', gameData);
 

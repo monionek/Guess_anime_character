@@ -1,0 +1,22 @@
+[
+  {
+    "quizTitle": "can you guess this character from bleach",
+    "correctAnswer": "Ichigo",
+    "wrongAnswers": [
+      "Urahara",
+      "Mario",
+      "Zbyszek"
+    ],
+    "description": "Main character from anime with orange hair."
+  },
+  {
+    "quizTitle": "Siema",
+    "correctAnswer": "Witam",
+    "wrongAnswers": [
+      "nie lubię cię",
+      "nie chce cię znać",
+      "pa pa"
+    ],
+    "description": "Przywitaj się ze mną plox"
+  }
+]

@@ -1,33 +1,64 @@
 import { NextResponse } from 'next/server';
 
+const fetchWithRetry = async (url: string, retries = 3, delay = 1000) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url);
+            if (response.ok) return response;
+        } catch (error) {
+            console.error(`Attempt ${i + 1} failed:`, error);
+        }
+        await new Promise(resolve => setTimeout(resolve, delay));
+    }
+    throw new Error('Failed to fetch data after retries');
+};
+
 export async function GET(request: Request) {
     try {
-        // Generate a random number between 1 and 100 (reduced to avoid missing data)
-        const randomAnimeId = Math.floor(Math.random() * 100) + 1;
-
-        // Fetch characters for the random anime ID
-        const response = await fetch(`https://api.jikan.moe/v4/anime/${randomAnimeId}/characters`);
-
-        if (!response.ok) {
-            console.error("Failed to fetch characters:", response.status, response.statusText);
-            return NextResponse.json({ message: 'Failed to fetch characters from Jikan API' }, { status: response.status });
+        // Fetch top anime list
+        const topAnimeResponse = await fetchWithRetry('https://api.jikan.moe/v4/top/anime');
+        if (!topAnimeResponse.ok) {
+            console.error("Failed to fetch top anime:", topAnimeResponse.status, topAnimeResponse.statusText);
+            return NextResponse.json({ message: 'Failed to fetch top anime from Jikan API' }, { status: topAnimeResponse.status });
         }
 
-        const result = await response.json();
-        const characters = result.data;
+        const topAnimeData = await topAnimeResponse.json();
+        const topAnimeList = topAnimeData.data;
+
+        if (!Array.isArray(topAnimeList) || topAnimeList.length === 0) {
+            return NextResponse.json({ message: 'No top anime found' }, { status: 404 });
+        }
+
+        // Select a random anime from the top anime list
+        const randomAnime = topAnimeList[Math.floor(Math.random() * topAnimeList.length)];
+        const randomAnimeId = randomAnime.mal_id;
+
+        if (!randomAnimeId) {
+            return NextResponse.json({ message: 'Invalid anime data' }, { status: 500 });
+        }
+
+        // Fetch characters for the selected anime
+        const charactersResponse = await fetchWithRetry(`https://api.jikan.moe/v4/anime/${randomAnimeId}/characters`);
+        if (!charactersResponse.ok) {
+            console.error("Failed to fetch characters:", charactersResponse.status, charactersResponse.statusText);
+            return NextResponse.json({ message: 'Failed to fetch characters from Jikan API' }, { status: charactersResponse.status });
+        }
+
+        const charactersData = await charactersResponse.json();
+        const characters = charactersData.data;
 
         if (!Array.isArray(characters) || characters.length === 0) {
             return NextResponse.json({ message: 'No characters found' }, { status: 404 });
         }
 
-        // Filter out main characters
+        // Filter main characters
         const mainCharacters = characters.filter(character => character.role === "Main");
 
         if (mainCharacters.length === 0) {
             return NextResponse.json({ message: 'No main characters found for this anime' }, { status: 404 });
         }
 
-        // Pick a random main character
+        // Select a random main character
         const randomCharacter = mainCharacters[Math.floor(Math.random() * mainCharacters.length)];
         const characterId = randomCharacter.character?.mal_id;
 
@@ -35,41 +66,59 @@ export async function GET(request: Request) {
             return NextResponse.json({ message: 'Invalid character ID' }, { status: 500 });
         }
 
-        // Fetch full character details
-        const characterResponse = await fetch(`https://api.jikan.moe/v4/characters/${characterId}/full`);
+        // Fetch character details and anime details in parallel
+        const [characterResponse, animeResponse] = await Promise.all([
+            fetchWithRetry(`https://api.jikan.moe/v4/characters/${characterId}/full`),
+            fetchWithRetry(`https://api.jikan.moe/v4/anime/${randomAnimeId}`)
+        ]);
+
         if (!characterResponse.ok) {
             console.error("Failed to fetch character details:", characterResponse.status, characterResponse.statusText);
             return NextResponse.json({ message: 'Failed to fetch character details' }, { status: characterResponse.status });
         }
 
+        if (!animeResponse.ok) {
+            console.error("Failed to fetch anime details:", animeResponse.status, animeResponse.statusText);
+            return NextResponse.json({ message: 'Failed to fetch anime details' }, { status: animeResponse.status });
+        }
+
+        // Parse character and anime details
         const characterData = await characterResponse.json();
         const characterDetails = characterData.data;
 
-        // Process character name
+        const animeDataDetails = await animeResponse.json();
+        const animeTitle = animeDataDetails.data?.title || "Unknown Anime";
+
+        // Format character name
         let characterName = characterDetails.name || "Unknown";
         if (characterName.includes(',')) {
-            characterName = characterName.split(',')[0].trim(); // Take only the first part before the comma
+            characterName = characterName.split(',')[0].trim();
         }
 
-        // Fetch anime details to get the anime title
-        const animeResponse = await fetch(`https://api.jikan.moe/v4/anime/${randomAnimeId}`);
-        let animeTitle = "Unknown Anime";
+        // Format character description
+        const aboutText = characterDetails.about && characterDetails.about.trim()
+            ? characterDetails.about
+            : "No description available";
 
-        if (animeResponse.ok) {
-            const animeData = await animeResponse.json();
-            animeTitle = animeData.data?.title || "Unknown Anime";
-        }
+        const cleanAbout = aboutText.replace(/\(.*?\)/g, '') // Remove text in parentheses
+            .replace(/\[.*?\]/g, '') // Remove text in square brackets
+            .replace(/<.*?>/g, '')  // Remove HTML tags
+            .trim();
 
-        // Prepare final response
+        // Return the response
         return NextResponse.json({
             name: characterName,
             image_url: characterDetails.images?.jpg?.image_url || "",
-            about: characterDetails.about || "No description available",
-            animeTitle, // Anime title associated with the character
+            about: cleanAbout,
+            animeTitle
         }, { status: 200 });
 
-    } catch (error) {
-        console.error('Error in API route:', error);
+    } catch (error: any) {
+        console.error('Error in API route:', {
+            message: error.message,
+            stack: error.stack,
+            response: error.response?.data
+        });
         return NextResponse.json({ message: 'Failed to fetch character data' }, { status: 500 });
     }
 }

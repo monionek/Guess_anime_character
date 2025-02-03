@@ -60,8 +60,7 @@ export default function GuessByPicturePage() {
 
             if (jwtToken) {
                 try {
-                    const payload = JSON.parse(atob(jwtToken.split('.')[1]));
-                    userName = payload.username || 'Guest';
+                    userName = localStorage.getItem('userName') || 'Guest';
                 } catch (error) {
                     console.error('Error decoding JWT:', error);
                 }
@@ -102,7 +101,7 @@ export default function GuessByPicturePage() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
             <h1 className="text-2xl font-bold mb-4">Guess the Character</h1>
             <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md text-center">
                 {/* Character Image */}
