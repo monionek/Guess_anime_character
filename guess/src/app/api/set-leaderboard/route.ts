@@ -7,7 +7,6 @@ const dbFilePath = path.join(process.cwd(), 'src/dbs/leaderboard.json');
 export async function POST(request: Request) {
     try {
         const gameData = await request.json();
-        console.log('Received new login request:', gameData);
 
         if (!fs.existsSync(dbFilePath)) {
             console.error('leaderboard.json file does not exist');

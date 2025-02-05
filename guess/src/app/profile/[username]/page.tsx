@@ -1,46 +1,42 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { userData } from '@/utils/interfaces';
+import { useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserPoints, deleteUser } from "@/store/pointsSlice";
+import { RootState, AppDispatch } from "@/store/store";
 
 const ProfilePage = () => {
     const router = useRouter();
     const params = useParams();
-    const [user, setUser] = useState<userData | null>(null);
-    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch<AppDispatch>();
 
+    const user = useSelector((state: RootState) => state.points.user);
+    const loading = useSelector((state: RootState) => state.points.loading);
+    const error = useSelector((state: RootState) => state.points.error);
     useEffect(() => {
-        const token = localStorage.getItem('jwtToken');
+        const token = localStorage.getItem("jwtToken");
         if (!token) {
-            router.push('/login');
+            router.push("/login");
             return;
         }
 
-        const fetchUser = async () => {
-            if (!params.username) return;
-            try {
-                const response = await fetch('/api/get-user', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userName: params.username }),
-                });
+        if (params.username) {
+            dispatch(fetchUserPoints(params.username as string));
+        }
+    }, [params.username, dispatch, router]);
 
-                const data = await response.json();
-                if (response.ok) {
-                    setUser(data);
-                } else {
-                    console.error(data.message);
-                }
-            } catch (error) {
-                console.error('Error fetching user:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
 
-        fetchUser();
-    }, [params.username, router]);
+    const handleDelete = async () => {
+        if (!user) return;
+
+        const success = await dispatch(deleteUser(user.userName));
+        if (success) {
+            localStorage.removeItem("jwtToken");
+            router.push("/");
+            alert("Account has been deleted");
+        }
+    };
 
     if (loading)
         return (
@@ -49,30 +45,13 @@ const ProfilePage = () => {
             </div>
         );
 
-    if (!user)
+    if (error || !user)
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
                 <p className="text-red-300 text-lg">User not found</p>
             </div>
         );
-    const handleDelete = async () => {
-        try {
-            const deleted = await fetch('/api/delete-user', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userName: params.username })
-            })
-            if (!deleted.ok) {
-                console.log(deleted)
-                return
-            }
-            localStorage.removeItem("jwtToken")
-            router.push("/")
-            alert('account has been deleted')
-        } catch (error) {
-            console.log(error)
-        }
-    }
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
             <div className="bg-white/90 shadow-2xl rounded-xl p-8 w-96 text-center">

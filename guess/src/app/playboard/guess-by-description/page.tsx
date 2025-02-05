@@ -1,8 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserPoints } from "@/store/pointsSlice";
+import { AppDispatch, RootState } from "@/store/store";
 
-export default function GuessByPicturePage() {
+
+export default function GuessByDescriptionPage() {
     const [character, setCharacter] = useState<{
         name: string;
         image_url: string;
@@ -14,7 +18,11 @@ export default function GuessByPicturePage() {
     const [numberOfTries, setNumberOfTries] = useState(0);
     const [showImage, setShowImage] = useState(false);
     const [showAnimeTitle, setShowAnimeTitle] = useState(false);
+    const isSubmittingRef = useRef(false);
     const router = useRouter();
+
+    const dispatch = useDispatch<AppDispatch>();
+    const { user, loading, error } = useSelector((state: RootState) => state.points);
 
     useEffect(() => {
         const fetchCharacter = async () => {
@@ -38,13 +46,12 @@ export default function GuessByPicturePage() {
         fetchCharacter();
     }, []);
 
-    // Function to get username from JWT
     const getUserNameFromJWT = () => {
         const jwtToken = localStorage.getItem('jwtToken');
         if (!jwtToken) return 'Guest';
 
         try {
-            const userName = localStorage.getItem('userName')
+            const userName = localStorage.getItem('userName');
             return userName || 'Guest';
         } catch (error) {
             console.error('Invalid JWT format:', error);
@@ -52,7 +59,6 @@ export default function GuessByPicturePage() {
         }
     };
 
-    // Function to update leaderboard
     const updateLeaderboard = async (userName: string, tries: number, characterName: string) => {
         try {
             const leaderboardResponse = await fetch('/api/set-leaderboard', {
@@ -77,39 +83,47 @@ export default function GuessByPicturePage() {
         }
     };
 
-    // Handle user's guess
-    const handleGuess = () => {
-        if (!character) return;
+    const handleGuess = useCallback(async () => {
+        console.log("handleGuess called");
+        if (!character || isSubmittingRef.current) return;
+
+        isSubmittingRef.current = true;
 
         setNumberOfTries((prev) => {
             const updatedTries = prev + 1;
+            console.log(`Number of tries: ${updatedTries}`);
 
-            if (updatedTries >= 5) {
-                setShowImage(true); // Show image after 5 incorrect tries
-            }
-            if (updatedTries >= 10) {
-                setShowAnimeTitle(true); // Show anime title after 10 incorrect tries
-            }
+            if (updatedTries >= 5) setShowImage(true);
+            if (updatedTries >= 10) setShowAnimeTitle(true);
 
             if (userGuess.trim().toLowerCase() === character.name.toLowerCase()) {
+                console.log("Correct guess!");
                 setIsCorrect(true);
 
                 const userName = getUserNameFromJWT();
+                console.log(`Updating leaderboard for user: ${userName}`);
                 updateLeaderboard(userName, updatedTries, character.name);
+
+                if (userName !== 'Guest') {
+                    console.log(`Updating points for user: ${userName}`);
+                    const pointsToAdd = 100;
+                    dispatch(updateUserPoints({ userName, newPoints: (user?.points || 0) + pointsToAdd }));
+                }
 
                 setTimeout(() => {
                     router.push('/playboard');
                 }, 2000);
             } else {
+                console.log("Incorrect guess.");
                 setIsCorrect(false);
             }
 
+            isSubmittingRef.current = false;
             return updatedTries;
         });
-    };
-
+    }, [userGuess, character]);
     if (!character) {
-        return <div>Loading...</div>; // Show loading state while fetching data
+        return <div>Loading...</div>;
     }
 
     return (
@@ -162,6 +176,17 @@ export default function GuessByPicturePage() {
                         Hint: This character is from <span className="italic">{character.animeTitle}</span>.
                     </p>
                 )}
+
+                {/* Display user's points */}
+                {user && (
+                    <p className="text-gray-500 mt-4">
+                        Your points: <span className="font-bold">{user.points}</span>
+                    </p>
+                )}
+
+                {/* Display loading or error messages */}
+                {loading && <p className="text-gray-500 mt-4">Updating points...</p>}
+                {error && <p className="text-red-500 mt-4">{error}</p>}
             </div>
         </div>
     );

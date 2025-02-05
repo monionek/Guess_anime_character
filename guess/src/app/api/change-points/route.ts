@@ -10,6 +10,7 @@ export async function PATCH(request: Request) {
         const data = await request.json();
         const userName = data.userName;
         const pointsValue = data.points;
+        console.log(data)
 
         if (!userName || typeof pointsValue !== 'number') {
             return NextResponse.json({ message: 'Invalid input' }, { status: 400 });
@@ -27,7 +28,7 @@ export async function PATCH(request: Request) {
             return NextResponse.json({ message: 'User not found' }, { status: 404 });
         }
 
-        findUser.points += pointsValue;
+        findUser.points = pointsValue;
 
         fs.writeFileSync(dbFilePath, JSON.stringify(users, null, 2));
 

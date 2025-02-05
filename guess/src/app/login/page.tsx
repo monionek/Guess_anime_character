@@ -2,13 +2,15 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signInWithGoogle } from '@/utils/firebase';
-
+import { useDispatch } from "react-redux";
+import { fetchUserPoints } from "@/store/pointsSlice";
+import { AppDispatch } from "@/store/store";
 export default function LoginPage() {
     const [passwordValue, setPasswordValue] = useState<string>('');
     const [userNameValue, setUserNameValue] = useState<string>('');
     const [loginStatus, setLoginStatus] = useState<{ success: boolean; message: string; } | null>(null);
     const router = useRouter();
-
+    const dispatch = useDispatch<AppDispatch>();
     const logIn = async (userName: string, password: string) => {
         try {
             const response = await fetch('/api/login', {
@@ -39,6 +41,7 @@ export default function LoginPage() {
                 localStorage.setItem('userName', userNameValue)
                 setLoginStatus({ success: true, message: 'Login successful!' });
                 router.push('/');
+                dispatch(fetchUserPoints(userNameValue));
             }
         } catch (error) {
             setLoginStatus({ success: false, message: error instanceof Error ? error.message : 'Login failed. Please try again.' });
