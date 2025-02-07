@@ -21,7 +21,7 @@ export default function PlayBoard() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 lg">
             <div className="text-center bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
                 <h1 className="text-3xl font-bold mb-6 text-gray-900">Choose Your Game Mode</h1>
                 <div className="space-y-6">

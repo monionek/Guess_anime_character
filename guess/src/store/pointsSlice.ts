@@ -59,7 +59,7 @@ export const updateUserPoints = createAsyncThunk(
     "points/updateUserPoints",
     async ({ userName, newPoints }: { userName: string; newPoints: number }, { rejectWithValue }) => {
         try {
-            const response = await fetch('/app/api/change-points', {
+            const response = await fetch('/api/change-points', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userName, points: newPoints }),
@@ -97,6 +97,11 @@ const pointsSlice = createSlice({
             })
             .addCase(deleteUser.fulfilled, (state) => {
                 state.user = null;
+            })
+            .addCase(updateUserPoints.fulfilled, (state, action) => {
+                if (state.user) {
+                    state.user.points = action.payload; // Aktualizujemy punkty w Redux Store
+                }
             });
     },
 });

@@ -6,8 +6,10 @@ import { userData } from '@/utils/interfaces';
 const dbFilePath = path.join(process.cwd(), 'src/dbs/users.json');
 
 export async function PATCH(request: Request) {
+    console.log("Received PATCH request");
     try {
         const data = await request.json();
+        console.log("Received PATCH request:", data);
         const userName = data.userName;
         const pointsValue = data.points;
         console.log(data)

@@ -5,10 +5,12 @@ import { signInWithGoogle } from '@/utils/firebase';
 import { useDispatch } from "react-redux";
 import { fetchUserPoints } from "@/store/pointsSlice";
 import { AppDispatch } from "@/store/store";
+import { useJwt } from "@/utils/jwt-context";
 export default function LoginPage() {
     const [passwordValue, setPasswordValue] = useState<string>('');
     const [userNameValue, setUserNameValue] = useState<string>('');
     const [loginStatus, setLoginStatus] = useState<{ success: boolean; message: string; } | null>(null);
+    const { jwtToken, setJwtToken } = useJwt();
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
     const logIn = async (userName: string, password: string) => {
@@ -37,6 +39,7 @@ export default function LoginPage() {
         try {
             const token = await logIn(userNameValue, passwordValue);
             if (token) {
+                setJwtToken(token.token)
                 localStorage.setItem('jwtToken', token.token);
                 localStorage.setItem('userName', userNameValue)
                 setLoginStatus({ success: true, message: 'Login successful!' });

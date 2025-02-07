@@ -3,15 +3,20 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/utils/theme-context";
+import { useJwt } from "@/utils/jwt-context";
 
 export default function NavBar() {
     const { theme, toggleTheme } = useTheme();
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const { jwtToken, setJwtToken } = useJwt();
 
     useEffect(() => {
-        const jwtToken = localStorage.getItem("jwtToken");
-        setIsAuthenticated(!!jwtToken);
-    }, []);
+        if (jwtToken === null) {
+            setIsAuthenticated(false);
+        } else {
+            setIsAuthenticated(true);
+        }
+    }, [jwtToken]);
 
     const navBarStyles = theme === "light" ? "bg-white text-black" : "bg-black text-white";
 
@@ -24,6 +29,7 @@ export default function NavBar() {
                 <>
                     <button
                         onClick={() => {
+                            setJwtToken(null)
                             localStorage.removeItem("jwtToken");
                             setIsAuthenticated(false);
                         }}

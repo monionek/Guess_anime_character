@@ -6,38 +6,33 @@
   },
   {
     "userName": "Guest",
+    "numberOfTries": 1,
+    "characterName": "Shinpachi Shimura"
+  },
+  {
+    "userName": "Guest",
+    "numberOfTries": 1,
+    "characterName": "Shinpachi Shimura"
+  },
+  {
+    "userName": "Guest",
+    "numberOfTries": 1,
+    "characterName": "Armin Arlert"
+  },
+  {
+    "userName": "Maks",
     "numberOfTries": 11,
-    "characterName": "Chrno"
-  },
-  {
-    "userName": "Guest",
-    "numberOfTries": 6,
-    "characterName": "Killer Queen"
-  },
-  {
-    "userName": "Guest",
-    "numberOfTries": 6,
-    "characterName": "Killer Queen"
-  },
-  {
-    "userName": "Guest",
-    "numberOfTries": 0,
-    "characterName": "Germany"
-  },
-  {
-    "userName": "Guest",
-    "numberOfTries": 10,
-    "characterName": "Motoko Kusanagi"
-  },
-  {
-    "userName": "Guest",
-    "numberOfTries": 10,
-    "characterName": "Koro-sensei"
+    "characterName": "Armin Arlert"
   },
   {
     "userName": "Maks",
-    "numberOfTries": 10,
-    "characterName": "Kitarou"
+    "numberOfTries": 1,
+    "characterName": "Edward Elric"
+  },
+  {
+    "userName": "Maks",
+    "numberOfTries": 11,
+    "characterName": "Kurapika"
   },
   {
     "userName": "Maks",
@@ -47,82 +42,12 @@
   {
     "userName": "Maks",
     "numberOfTries": 1,
-    "characterName": "Kagura"
+    "characterName": "Ichigo Kurosaki"
   },
   {
     "userName": "Maks",
-    "numberOfTries": 0,
-    "characterName": "Kagura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 3,
-    "characterName": "Shinpachi Shimura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 3,
-    "characterName": "Shinpachi Shimura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Frieren"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Frieren"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 13,
-    "characterName": "Kallen Stadtfeld"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 13,
-    "characterName": "Kallen Stadtfeld"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Kagura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Kagura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 3,
-    "characterName": "Shinpachi Shimura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 3,
-    "characterName": "Shinpachi Shimura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Kagura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Kagura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Kagura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Kagura"
+    "numberOfTries": 11,
+    "characterName": "Armin Arlert"
   },
   {
     "userName": "Maks",
@@ -132,56 +57,11 @@
   {
     "userName": "Maks",
     "numberOfTries": 1,
-    "characterName": "Shinpachi Shimura"
+    "characterName": "Armin Arlert"
   },
   {
     "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Shinpachi Shimura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Shinpachi Shimura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Frieren"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Frieren"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Shinpachi Shimura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Shinpachi Shimura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Shinpachi Shimura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 1,
-    "characterName": "Shinpachi Shimura"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 6,
-    "characterName": "Maomao"
-  },
-  {
-    "userName": "Maks",
-    "numberOfTries": 6,
-    "characterName": "Maomao"
+    "numberOfTries": 108,
+    "characterName": "Eren Yeager"
   }
 ]

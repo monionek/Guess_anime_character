@@ -37,11 +37,20 @@ export async function GET(request: Request) {
             return NextResponse.json({ message: 'Invalid anime data' }, { status: 500 });
         }
 
-        // Fetch characters for the selected anime
-        const charactersResponse = await fetchWithRetry(`https://api.jikan.moe/v4/anime/${randomAnimeId}/characters`);
+        // Fetch characters and anime details in parallel
+        const [charactersResponse, animeResponse] = await Promise.all([
+            fetchWithRetry(`https://api.jikan.moe/v4/anime/${randomAnimeId}/characters`),
+            fetchWithRetry(`https://api.jikan.moe/v4/anime/${randomAnimeId}`)
+        ]);
+
         if (!charactersResponse.ok) {
             console.error("Failed to fetch characters:", charactersResponse.status, charactersResponse.statusText);
             return NextResponse.json({ message: 'Failed to fetch characters from Jikan API' }, { status: charactersResponse.status });
+        }
+
+        if (!animeResponse.ok) {
+            console.error("Failed to fetch anime details:", animeResponse.status, animeResponse.statusText);
+            return NextResponse.json({ message: 'Failed to fetch anime details' }, { status: animeResponse.status });
         }
 
         const charactersData = await charactersResponse.json();
@@ -66,20 +75,11 @@ export async function GET(request: Request) {
             return NextResponse.json({ message: 'Invalid character ID' }, { status: 500 });
         }
 
-        // Fetch character details and anime details in parallel
-        const [characterResponse, animeResponse] = await Promise.all([
-            fetchWithRetry(`https://api.jikan.moe/v4/characters/${characterId}/full`),
-            fetchWithRetry(`https://api.jikan.moe/v4/anime/${randomAnimeId}`)
-        ]);
-
+        // Fetch character details
+        const characterResponse = await fetchWithRetry(`https://api.jikan.moe/v4/characters/${characterId}/full`);
         if (!characterResponse.ok) {
             console.error("Failed to fetch character details:", characterResponse.status, characterResponse.statusText);
             return NextResponse.json({ message: 'Failed to fetch character details' }, { status: characterResponse.status });
-        }
-
-        if (!animeResponse.ok) {
-            console.error("Failed to fetch anime details:", animeResponse.status, animeResponse.statusText);
-            return NextResponse.json({ message: 'Failed to fetch anime details' }, { status: animeResponse.status });
         }
 
         // Parse character and anime details
