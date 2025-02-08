@@ -1,13 +1,8 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-
-interface User {
-    userName: string;
-    email: string;
-    points: number;
-}
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { shopItem, userData } from "@/utils/interfaces";
 
 interface PointsState {
-    user: User | null;
+    user: userData | null;
     loading: boolean;
     error: string | null;
 }
@@ -17,6 +12,7 @@ const initialState: PointsState = {
     loading: false,
     error: null,
 };
+
 export const fetchUserPoints = createAsyncThunk(
     "points/fetchUserPoints",
     async (username: string, { rejectWithValue }) => {
@@ -39,6 +35,7 @@ export const fetchUserPoints = createAsyncThunk(
         }
     }
 );
+
 export const deleteUser = createAsyncThunk(
     "points/deleteUser",
     async (userName: string, { rejectWithValue }) => {
@@ -55,6 +52,7 @@ export const deleteUser = createAsyncThunk(
         return userName;
     }
 );
+
 export const updateUserPoints = createAsyncThunk(
     "points/updateUserPoints",
     async ({ userName, newPoints }: { userName: string; newPoints: number }, { rejectWithValue }) => {
@@ -71,6 +69,28 @@ export const updateUserPoints = createAsyncThunk(
             }
 
             return newPoints;
+        } catch (error) {
+            return rejectWithValue("Network error");
+        }
+    }
+);
+
+export const updateProfileIcon = createAsyncThunk(
+    "points/updateProfileIcon",
+    async ({ userName, profileIcon }: { userName: string; profileIcon: string }, { rejectWithValue }) => {
+        try {
+            const response = await fetch('/api/update-profile-icon', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userName, profileIcon }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                return rejectWithValue(errorData.message || "Failed to update profile icon");
+            }
+
+            return profileIcon;
         } catch (error) {
             return rejectWithValue("Network error");
         }
@@ -100,7 +120,12 @@ const pointsSlice = createSlice({
             })
             .addCase(updateUserPoints.fulfilled, (state, action) => {
                 if (state.user) {
-                    state.user.points = action.payload; // Aktualizujemy punkty w Redux Store
+                    state.user.points = action.payload;
+                }
+            })
+            .addCase(updateProfileIcon.fulfilled, (state, action) => {
+                if (state.user) {
+                    state.user.profileIcon = action.payload;
                 }
             });
     },

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const fetchWithRetry = async (url: string, retries = 3, delay = 1000) => {
+const fetchWithRetry = async (url: string, retries = 2, delay = 1000) => {
     for (let i = 0; i < retries; i++) {
         try {
             const response = await fetch(url);

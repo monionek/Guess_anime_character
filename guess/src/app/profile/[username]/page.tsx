@@ -14,6 +14,7 @@ const ProfilePage = () => {
     const user = useSelector((state: RootState) => state.points.user);
     const loading = useSelector((state: RootState) => state.points.loading);
     const error = useSelector((state: RootState) => state.points.error);
+
     useEffect(() => {
         const token = localStorage.getItem("jwtToken");
         if (!token) {
@@ -25,7 +26,6 @@ const ProfilePage = () => {
             dispatch(fetchUserPoints(params.username as string));
         }
     }, [params.username, dispatch, router]);
-
 
     const handleDelete = async () => {
         if (!user) return;
@@ -56,6 +56,10 @@ const ProfilePage = () => {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
             <div className="bg-white/90 shadow-2xl rounded-xl p-8 w-96 text-center">
                 <h1 className="text-3xl font-bold text-gray-800 mb-4">
+                    {/* Display profile icon if available */}
+                    {user.profileIcon && (
+                        <div className="mr-2">{user.profileIcon}</div>
+                    )}
                     Welcome, {user.userName} 👋
                 </h1>
                 <div className="space-y-3 text-gray-700">
@@ -65,6 +69,30 @@ const ProfilePage = () => {
                     <p className="text-lg">
                         <span className="font-semibold">Points:</span> {user.points} 🎯
                     </p>
+
+                    {/* Display badges if available */}
+                    {user.badges && user.badges.length > 0 && (
+                        <div className="mt-4">
+                            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                                Badges 🏅
+                            </h2>
+                            <div className="flex flex-wrap justify-center gap-2">
+                                {user.badges.map((badge) => (
+                                    <div
+                                        key={badge.id}
+                                        className="p-2 bg-purple-100 rounded-lg shadow-sm flex items-center justify-center"
+                                    >
+                                        <span className="text-2xl mr-2">{badge.emoji}</span>
+                                        <span className="text-sm font-medium text-gray-700">
+                                            {badge.name}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Delete Account Button */}
                     <p>
                         <button
                             onClick={handleDelete}

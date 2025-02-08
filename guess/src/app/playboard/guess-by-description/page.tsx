@@ -24,7 +24,7 @@ export default function GuessByDescriptionPage() {
     const router = useRouter();
 
     const dispatch = useDispatch<AppDispatch>();
-    const { user, loading } = useSelector((state: RootState) => state.points);
+    const { user } = useSelector((state: RootState) => state.points);
 
     useEffect(() => {
         const fetchCharacter = async () => {
@@ -35,7 +35,7 @@ export default function GuessByDescriptionPage() {
                 }
                 const data = await response.json();
                 setCharacter(data);
-                dispatchGame({ type: "RESET_GAME_STATE" }); // Resetowanie stanu gry
+                dispatchGame({ type: "RESET_GAME_STATE" });
             } catch (error) {
                 console.error("Error fetching character:", error);
             }
@@ -47,13 +47,13 @@ export default function GuessByDescriptionPage() {
     const handleGuess = async () => {
         if (!character) return;
 
-        dispatchGame({ type: "INCREMENT_NUMBER_OF_TRIES" }); // Zwiększ liczbę prób
+        dispatchGame({ type: "INCREMENT_NUMBER_OF_TRIES" });
 
-        if (numberOfTries + 1 >= 5) dispatchGame({ type: "SET_SHOW_HINT", payload: true }); // Pokaż podpowiedź po 5 próbach
-        if (numberOfTries + 1 >= 10) dispatchGame({ type: "SET_SHOW_EXTRA_HINT", payload: true }); // Pokaż dodatkową podpowiedź po 10 próbach
+        if (numberOfTries + 1 >= 5) dispatchGame({ type: "SET_SHOW_HINT", payload: true });
+        if (numberOfTries + 1 >= 10) dispatchGame({ type: "SET_SHOW_EXTRA_HINT", payload: true });
 
         if (userGuess.trim().toLowerCase() === character.name.toLowerCase()) {
-            dispatchGame({ type: "SET_IS_CORRECT", payload: true }); // Ustaw poprawną odpowiedź
+            dispatchGame({ type: "SET_IS_CORRECT", payload: true });
 
             const jwtToken = localStorage.getItem("jwtToken");
             let userName = "Guest";

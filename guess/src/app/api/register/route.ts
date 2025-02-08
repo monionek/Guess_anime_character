@@ -21,13 +21,13 @@ export async function POST(request: Request) {
             console.log("userName or email already taken")
             return NextResponse.json({ message: 'userName or email already taken' }, { status: 400 });
         }
-        const userWithPoints = { ...newUser, points: 50 };
-        users.push(userWithPoints);
+        const userWithPointsAndInv = { ...newUser, points: 50, inventory: [] };
+        users.push(userWithPointsAndInv);
 
         fs.writeFileSync(dbFilePath, JSON.stringify(users, null, 2));
-        console.log('User added successfully:', userWithPoints);
+        console.log('User added successfully:', userWithPointsAndInv);
 
-        return NextResponse.json({ message: 'User registered successfully', user: userWithPoints });
+        return NextResponse.json({ message: 'User registered successfully', user: userWithPointsAndInv });
     } catch (error) {
         console.error('Error in API route:', error);
         return NextResponse.json({ message: 'Failed to register user' }, { status: 500 });

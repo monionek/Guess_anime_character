@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { quizData } from '@/utils/interfaces';
+import { useJwt } from '@/utils/jwt-context';
 
 export default function QuizCreatorPage() {
     const [quizTitle, setQuizTitle] = useState<string>('');
@@ -9,6 +10,12 @@ export default function QuizCreatorPage() {
     const [wrongAnswers, setWrongAnswers] = useState<string[]>(['', '', '']);
     const [description, setDescription] = useState<string>('');
     const [message, setMessage] = useState<string>('');
+    const [loggedIn, setLoggedIn] = useState<boolean>(false);
+    const { jwtToken } = useJwt();
+
+    useEffect(() => {
+        setLoggedIn(jwtToken !== null);
+    }, [jwtToken]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,7 +58,7 @@ export default function QuizCreatorPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 p-6">
-            <div className="bg-white shadow-2xl rounded-xl p-8 w-full max-w-lg">
+            {loggedIn ? (<div className="bg-white shadow-2xl rounded-xl p-8 w-full max-w-lg">
                 <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">📜 Quiz Creator</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -123,7 +130,9 @@ export default function QuizCreatorPage() {
                         {message}
                     </p>
                 )}
-            </div>
+            </div>) : (<div className="flex items-center justify-center min-h-screen">
+                <p className="text-2xl text-red-500 font-semibold">Please log in to use quiz creator</p>
+            </div>)}
         </div>
     );
 }

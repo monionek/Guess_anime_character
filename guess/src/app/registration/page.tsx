@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { userData } from '@/utils/interfaces';
+import { userRegisterData } from '@/utils/interfaces';
 
 export default function RegisterPage() {
     const [emailValue, setEmailValue] = useState<string>('');
@@ -11,7 +11,7 @@ export default function RegisterPage() {
         message: string;
     } | null>(null);
 
-    const registerUser = async (userData: userData) => {
+    const registerUser = async (userData: userRegisterData) => {
         try {
             const response = await fetch('/api/register', {
                 method: 'POST',

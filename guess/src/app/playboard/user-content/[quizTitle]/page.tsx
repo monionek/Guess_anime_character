@@ -37,21 +37,19 @@ export default function QuizPage() {
         const correct = answer === quiz?.correctAnswer;
         setIsCorrect(correct);
 
-        // Przekierowanie po 2 sekundach
         setTimeout(() => {
             router.push('/playboard/user-content');
         }, 2000);
     };
 
     if (error) {
-        return <div className="text-center text-red-600">❌ Nie znaleziono quizu!</div>;
+        return <div className="text-center text-red-600">❌ Quiz was not found!</div>;
     }
 
     if (!quiz) {
-        return <div className="text-center">⏳ Ładowanie...</div>;
+        return <div className="text-center">⏳ Loading...</div>;
     }
 
-    // Losowe przetasowanie odpowiedzi
     const shuffledAnswers = [quiz.correctAnswer, ...quiz.wrongAnswers].sort(() => Math.random() - 0.5);
 
     return (
@@ -67,13 +65,13 @@ export default function QuizPage() {
                             onClick={() => handleAnswerClick(answer)}
                             className={`w-full text-left font-semibold px-4 py-2 rounded-lg shadow-md transition-all ${selectedAnswer
                                 ? answer === quiz.correctAnswer
-                                    ? 'bg-green-500 text-white' // Poprawna odpowiedź
+                                    ? 'bg-green-500 text-white'
                                     : answer === selectedAnswer
-                                        ? 'bg-red-500 text-white' // Niepoprawna odpowiedź
-                                        : 'bg-gray-200 text-gray-700' // Pozostałe odpowiedzi
-                                : 'bg-blue-100 text-blue-800 hover:bg-blue-200' // Niekliknięte odpowiedzi
+                                        ? 'bg-red-500 text-white'
+                                        : 'bg-gray-200 text-gray-700'
+                                : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
                                 }`}
-                            disabled={selectedAnswer !== null} // Zablokuj przyciski po wybraniu odpowiedzi
+                            disabled={selectedAnswer !== null}
                         >
                             {answer}
                         </button>
@@ -82,7 +80,7 @@ export default function QuizPage() {
 
                 {selectedAnswer && (
                     <p className={`mt-4 text-center text-lg font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                        {isCorrect ? '🎉 Poprawna odpowiedź!' : '❌ Niepoprawna odpowiedź!'}
+                        {isCorrect ? '🎉 Valid Answer!' : '❌ Invalid Answer!'}
                     </p>
                 )}
             </div>

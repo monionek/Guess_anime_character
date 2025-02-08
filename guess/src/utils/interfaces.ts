@@ -1,8 +1,24 @@
+export interface shopItem {
+    id: number;
+    itemType: string;
+    name: string;
+    emoji: string;
+    price: number;
+}
+
 export interface userData {
+    profileIcon: string;
     userName: string;
     email: string;
     password: string;
     points: number;
+    badges: shopItem[]
+}
+
+export interface userRegisterData {
+    userName: string;
+    email: string;
+    password: string;
 }
 
 export interface leaderboardData {
