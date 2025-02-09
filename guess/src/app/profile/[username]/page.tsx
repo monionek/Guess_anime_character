@@ -5,11 +5,13 @@ import { useRouter, useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserPoints, deleteUser } from "@/store/pointsSlice";
 import { RootState, AppDispatch } from "@/store/store";
+import { useJwt } from "@/utils/jwt-context";
 
 const ProfilePage = () => {
     const router = useRouter();
     const params = useParams();
     const dispatch = useDispatch<AppDispatch>();
+    const { setJwtToken } = useJwt();
 
     const user = useSelector((state: RootState) => state.points.user);
     const loading = useSelector((state: RootState) => state.points.loading);
@@ -33,6 +35,7 @@ const ProfilePage = () => {
         const success = await dispatch(deleteUser(user.userName));
         if (success) {
             localStorage.removeItem("jwtToken");
+            setJwtToken(null)
             router.push("/");
             alert("Account has been deleted");
         }

@@ -99,7 +99,7 @@ export default function GuessByPicturePage() {
                 router.push("/playboard");
             }, 2000);
         } else {
-            dispatchGame({ type: "SET_IS_CORRECT", payload: false }); // Ustaw niepoprawną odpowiedź
+            dispatchGame({ type: "SET_IS_CORRECT", payload: false });
         }
     };
 

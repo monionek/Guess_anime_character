@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { shopItem, userData } from "@/utils/interfaces";
+import { userData } from "@/utils/interfaces";
 
 interface PointsState {
     user: userData | null;
@@ -12,7 +12,6 @@ const initialState: PointsState = {
     loading: false,
     error: null,
 };
-
 export const fetchUserPoints = createAsyncThunk(
     "points/fetchUserPoints",
     async (username: string, { rejectWithValue }) => {
@@ -39,7 +38,7 @@ export const fetchUserPoints = createAsyncThunk(
 export const deleteUser = createAsyncThunk(
     "points/deleteUser",
     async (userName: string, { rejectWithValue }) => {
-        const response = await fetch('/api/login', {
+        const response = await fetch('/api/delete-user', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userName }),

@@ -18,5 +18,15 @@
       "pa pa"
     ],
     "description": "Przywitaj się ze mną plox"
+  },
+  {
+    "quizTitle": "Elo benc",
+    "correctAnswer": "Elo",
+    "wrongAnswers": [
+      "Benc",
+      "Kluski",
+      "Konik"
+    ],
+    "description": "Elo benc siema essaaa"
   }
 ]
