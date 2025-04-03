@@ -1,0 +1,32 @@
+[
+  {
+    "profileIcon": "🤠",
+    "userName": "Maks",
+    "email": "Maks@example.com",
+    "password": "password",
+    "points": 899500,
+    "badges": [
+      {
+        "id": 6,
+        "itemType": "badge",
+        "name": "This Rocket ~ MultiGamePlayGuy",
+        "emoji": "🚀",
+        "price": 300
+      },
+      {
+        "id": 4,
+        "itemType": "badge",
+        "name": "Royal Crown",
+        "emoji": "👑",
+        "price": 200
+      },
+      {
+        "id": 2,
+        "itemType": "badge",
+        "name": "Fire",
+        "emoji": "🔥",
+        "price": 100
+      }
+    ]
+  }
+]
