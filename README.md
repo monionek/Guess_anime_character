@@ -5,4 +5,5 @@ Guess anime character with:
 - leaderboard for users
 - shop where for points you get by playing you can buy badges and profile icons
 
-I have used Jikan api for this project: https://jikan.moe
+For accesing data about anime characters I have used Jikan api for this: https://jikan.moe
+Project is created mostly in next.js using typescript, jwt for user information, dotenv for env variables
